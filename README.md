@@ -1,0 +1,2 @@
+# CRAP
+Crypto Accounting Project
