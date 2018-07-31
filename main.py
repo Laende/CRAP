@@ -21,29 +21,29 @@ if __name__ == "__main__":
 	###########################################################################################################
 	# Load config file
 	with open('conf.json') as json_data_file:
-		data = json.load(json_data_file)
+		config = json.load(json_data_file)
 	
 	# Init Bitcoin TAX
 	btc_tax = BtcTax(
-		username=data["BITOOINTAX_USERNAME"],
-		password=data["BITCOINTAX_PASSWORD"],
-		api_key=data["BITCOINTAX_API_KEY"],
-		api_secret=data["BITCOINTAX_API_SECRET"],
+		username=config["BITOOINTAX_USERNAME"],
+		password=config["BITCOINTAX_PASSWORD"],
+		api_key=config["BITCOINTAX_API_KEY"],
+		api_secret=config["BITCOINTAX_API_SECRET"],
 		print=True)
 	
 	# Init DB
 	db = Database(
-		db_hostname=data["DB_HOSTNAME"],
-		db_username=data["DB_USERNAME"],
-		db_password=data["DB_PASSWORD"],
-		db_dataname=data["DB_DATA_NAME"],
+		db_hostname=config["DB_HOSTNAME"],
+		db_username=config["DB_USERNAME"],
+		db_password=config["DB_PASSWORD"],
+		db_dataname=config["DB_DATA_NAME"],
 		print=True)
 	
 	# Init Fiken
 	fiken = Fiken(
-		user=data["FIKEN_USERNAME"],
-		passwd=data["FIKEN_PASSWORD"],
-		company_slug=data["FIKEN_COMPANY_SLUG"])
+		user=config["FIKEN_USERNAME"],
+		passwd=config["FIKEN_PASSWORD"],
+		company_slug=config["FIKEN_COMPANY_SLUG"])
 	###########################################################################################################
 	
 	# Get the data
@@ -89,8 +89,8 @@ if __name__ == "__main__":
 			entry = postering.addEntry(description, date)
 			line = postering.addLine(index=entry,
 									 debit_amount=row["NOK_Amount"],
-									 debit_account="1908",
-									 credit_account="8079",
+									 debit_account=config["FIKEN_ANNEN_VALUTA"],
+									 credit_account=config["FIKEN_FINANSINNTEKTSKONTO"],
 									 vat_code="6")
 		
 		# Retrieve valid json fit to fiken.
@@ -127,16 +127,16 @@ if __name__ == "__main__":
 			entry = postering.addEntry(description, date)
 			postering.addLine(index=entry,
 							  debit_amount=row["Cost_Base"],
-							  debit_account="1500:10001",
-							  credit_account="1908",
+							  debit_account=config["FIKEN_KUNDEKONTO"],
+							  credit_account=config["FIKEN_ANNEN_VALUTA"],
 							  vat_code="6")
 			
 			if row["Gains"] >= 0:
-				g_debit = "1500:10001"
-				g_credit = "8060"
+				g_debit = config["FIKEN_KUNDEKONTO"]
+				g_credit = config["FIKEN_AGIO_KONTO"]
 			elif row["Gains"] < 0:
-				g_debit = "8160"
-				g_credit = "1500:10001"
+				g_debit = config["FIKEN_DISAGIO_KONTO"]
+				g_credit = config["FIKEN_KUNDEKONTO"]
 				
 			postering.addLine(index=entry,
 							  debit_amount=row["Gains"],
