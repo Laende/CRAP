@@ -160,6 +160,17 @@ class BtcTax(object):
 					tx_list.append(row)
 				if row['Date Sold'] and (date_sold < to_date):
 					if row['Date Sold'] != sale_date:  # A new date is encountered.
+						
+						# Add the old values to the list first
+						if sale_date
+							sales_list.append({
+								'Date Sold': sale_date,
+								'Proceeds': sale_sum,
+								'Cost Basis':cost_basis_sum,
+								'Gain': gain_sum,
+								'Symbol': symbol,
+								'Volume': sale_crypto_sum})
+						
 						# Reset vars
 						sale_date = row['Date Sold']
 						sale_sum = Decimal(row['Proceeds'])
